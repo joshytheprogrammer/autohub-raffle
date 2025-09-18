@@ -14,6 +14,7 @@ CREATE TABLE tickets (
   user_id INTEGER NOT NULL,
   ticket_number TEXT UNIQUE NOT NULL,
   payment_ref TEXT NOT NULL,
+  payment_amount INTEGER DEFAULT 10000,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id)
 );

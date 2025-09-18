@@ -81,13 +81,14 @@ Visit http://localhost:3000 to see your application.
 ## 💳 Payment Flow
 
 1. User clicks "Buy Ticket" (₦10,000)
-2. Paystack payment popup opens
-3. User completes payment
-4. Payment reference is sent to `/api/tickets/create`
-5. Server verifies payment with Paystack API
-6. Unique ticket number is generated (AUTOHUB-000001)
-7. Ticket is saved to database
-8. User receives confirmation
+2. `app/utils/paystack.js` loads the Paystack script dynamically
+3. Paystack payment popup opens with configured parameters
+4. User completes payment
+5. On successful payment, reference is sent to `/api/tickets/create`
+6. Server verifies payment with Paystack API (amount & status check)
+7. Unique ticket number is generated (AUTOHUB-000001 format)
+8. Ticket is saved to database with payment details
+9. User receives confirmation and sees new ticket in dashboard
 
 ## 🎯 Admin Features
 

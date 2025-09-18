@@ -266,51 +266,59 @@ const loadTickets = async () => {
 
 const buyTicket = async () => {
   error.value = ''
+  successMessage.value = ''
   loading.value = true
 
   try {
-    // Initialize Paystack payment
-    if (typeof PaystackPop === 'undefined') {
-      await loadPaystackScript()
-    }
-
-    const handler = PaystackPop.setup({
-      key: 'pk_test_f50f9ff6ab406d13651a0dffed2cc9330a9f7c67', // Use the actual key from .env
+    // Import utilities only when needed (client-side)
+    const { initializePaystackPayment } = await import('~/utils/paystack')
+    
+    await initializePaystackPayment({
       email: user.value.email,
-      amount: 1000000, // 10,000 NGN in kobo
-      currency: 'NGN',
-      ref: 'AUTOHUB_' + Math.floor((Math.random() * 1000000000) + 1),
-      metadata: {
-        user_id: user.value.id,
-        user_email: user.value.email
-      },
-      callback: async function(response) {
+      userId: user.value.id,
+      onSuccess: async (response) => {
         await handlePaymentSuccess(response)
       },
-      onClose: function() {
+      onError: (err) => {
+        console.error('Payment error:', err)
+        error.value = 'Payment failed. Please try again.'
         loading.value = false
+      },
+      onClose: () => {
+        // Only reset loading if it wasn't successful
+        if (loading.value) {
+          loading.value = false
+          // We don't set an error message here as closing might be intentional
+        }
       }
     })
-
-    handler.openIframe()
   } catch (err) {
-    error.value = 'Failed to initialize payment'
+    console.error('Payment initialization error:', err)
+    error.value = 'Failed to initialize payment. Please try again later.'
     loading.value = false
   }
 }
 
 const handlePaymentSuccess = async (response) => {
   try {
+    if (!response || !response.reference) {
+      throw new Error('Invalid payment response')
+    }
+    
     const token = localStorage.getItem('authToken')
+    if (!token) {
+      throw new Error('Authentication token not found')
+    }
+    
     const result = await $fetch('/api/tickets/create', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`
       },
       body: {
-        user_id: user.value.id,
-        payment_reference: response.reference,
-        amount: 10000
+        paymentRef: response.reference,
+        transactionId: response.transaction || '',
+        metadata: response.metadata || {}
       }
     })
 
@@ -322,27 +330,14 @@ const handlePaymentSuccess = async (response) => {
       error.value = result.message || 'Failed to create ticket'
     }
   } catch (err) {
-    error.value = 'Failed to process ticket creation'
+    console.error('Ticket creation error:', err)
+    error.value = 'Failed to process ticket creation. Please contact support.'
   } finally {
     loading.value = false
   }
 }
 
-const loadPaystackScript = () => {
-  return new Promise((resolve, reject) => {
-    if (document.getElementById('paystack-js')) {
-      resolve()
-      return
-    }
-
-    const script = document.createElement('script')
-    script.id = 'paystack-js'
-    script.src = 'https://js.paystack.co/v1/inline.js'
-    script.onload = resolve
-    script.onerror = reject
-    document.head.appendChild(script)
-  })
-}
+// Paystack script loading is now handled in the utils/paystack.js file
 
 const logout = () => {
   if (process.client) {

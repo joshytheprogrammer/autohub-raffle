@@ -2,6 +2,10 @@ import jwt from 'jsonwebtoken'
 import { getDatabase } from '@/database/setup.js'
 import { generateTicketNumber } from '~/utils/ticket.js'
 
+// Define ticket price constant (must match the frontend)
+const TICKET_PRICE_NGN = 10000; // ₦10,000
+const TICKET_PRICE_KOBO = TICKET_PRICE_NGN * 100;
+
 export default defineEventHandler(async (event) => {
   // Get authorization header
   const authorization = getHeader(event, 'authorization')
@@ -29,26 +33,48 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Verify payment with Paystack
-    const paystackResponse = await $fetch(`https://api.paystack.co/transaction/verify/${paymentRef}`, {
-      headers: {
-        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY || 'sk_test_your_secret_key'}`
-      }
-    })
+    // Get Paystack secret key from environment variable
+    const paystackSecretKey = process.env.PAYSTACK_SECRET_KEY;
+    if (!paystackSecretKey) {
+      console.error('Paystack secret key not configured');
+      throw createError({
+        statusCode: 500,
+        statusMessage: 'Payment provider not properly configured'
+      });
+    }
 
-    if (!paystackResponse.status || paystackResponse.data.status !== 'success') {
+    // Verify payment with Paystack
+    let paystackResponse;
+    try {
+      paystackResponse = await $fetch(`https://api.paystack.co/transaction/verify/${paymentRef}`, {
+        headers: {
+          Authorization: `Bearer ${paystackSecretKey}`,
+          'Content-Type': 'application/json'
+        }
+      });
+    } catch (paystackError) {
+      console.error('Paystack verification error:', paystackError);
+      throw createError({
+        statusCode: 502,
+        statusMessage: 'Failed to verify payment with provider'
+      });
+    }
+
+    // Check if the Paystack verification was successful
+    if (!paystackResponse || !paystackResponse.status || paystackResponse.data?.status !== 'success') {
+      console.error('Payment verification failed:', paystackResponse);
       throw createError({
         statusCode: 400,
-        statusMessage: 'Payment verification failed'
-      })
+        statusMessage: 'Payment verification failed or payment was not successful'
+      });
     }
 
     // Check if payment amount is correct (₦10,000 = 1,000,000 kobo)
-    if (paystackResponse.data.amount !== 1000000) {
+    if (paystackResponse.data.amount !== TICKET_PRICE_KOBO) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Invalid payment amount'
-      })
+        statusMessage: `Invalid payment amount. Expected ₦${TICKET_PRICE_NGN}`
+      });
     }
 
     const db = getDatabase()
@@ -66,14 +92,35 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Create new ticket
-    const result = await db.execute({
-      sql: `INSERT INTO tickets (user_id, ticket_number, payment_ref, created_at)
-            VALUES (?, ?, ?, datetime('now'))`,
-      args: [userId, '', paymentRef] // Empty ticket_number for now
-    })
+    // Extract customer info from payment data for ticket record
+    let customerName = '';
+    let customerEmail = '';
+    try {
+      customerName = paystackResponse.data.customer?.name || '';
+      customerEmail = paystackResponse.data.customer?.email || '';
+    } catch (e) {
+      console.warn('Could not extract customer info from payment data');
+    }
 
-    const ticketId = result.lastInsertRowid
+    // Create new ticket with transaction details
+    const result = await db.execute({
+      sql: `INSERT INTO tickets (
+              user_id, 
+              ticket_number, 
+              payment_ref, 
+              payment_amount, 
+              created_at
+            )
+            VALUES (?, ?, ?, ?, datetime('now'))`,
+      args: [
+        userId, 
+        '', // Empty ticket_number initially
+        paymentRef, 
+        TICKET_PRICE_NGN
+      ]
+    });
+    
+    const ticketId = result.lastInsertRowid;
 
     // Generate ticket number and update
     const ticketNumber = generateTicketNumber(ticketId)
@@ -81,7 +128,7 @@ export default defineEventHandler(async (event) => {
     await db.execute({
       sql: 'UPDATE tickets SET ticket_number = ? WHERE id = ?',
       args: [ticketNumber, ticketId]
-    })
+    });
 
     // Get the created ticket with user info
     const ticketResult = await db.execute({
@@ -90,14 +137,18 @@ export default defineEventHandler(async (event) => {
             JOIN users u ON t.user_id = u.id
             WHERE t.id = ?`,
       args: [ticketId]
-    })
+    });
 
-    const ticket = ticketResult.rows[0]
+    const ticket = ticketResult.rows[0];
 
     return {
       success: true,
       message: 'Ticket created successfully',
-      ticket
+      ticket,
+      paymentDetails: {
+        reference: paymentRef,
+        amount: TICKET_PRICE_NGN
+      }
     }
 
   } catch (error) {
