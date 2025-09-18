@@ -1,159 +1,221 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600">
+  <div class="min-h-screen bg-neutral-50">
     <!-- Navigation -->
-    <nav class="bg-white/10 backdrop-blur-md border-b border-white/20">
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
           <div class="flex items-center">
-            <h1 class="text-2xl font-bold text-white">AutoHub</h1>
+            <div class="flex items-center space-x-2">
+              <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+                <span class="text-white font-bold text-sm">🚗</span>
+              </div>
+              <h1 class="text-2xl font-bold text-neutral-900">AutoHub</h1>
+            </div>
           </div>
           <div class="flex items-center space-x-4">
-            <NuxtLink to="/login" class="text-white hover:text-gray-200 transition-colors">Login</NuxtLink>
-            <NuxtLink to="/register" class="bg-white text-purple-600 px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors">Sign Up</NuxtLink>
+            <NuxtLink to="/login" class="text-neutral-600 hover:text-neutral-900 font-medium transition-colors">Login</NuxtLink>
+            <NuxtLink to="/register" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-2xl font-medium transition-all hover:shadow-lg">
+              Get Started
+            </NuxtLink>
           </div>
         </div>
       </div>
     </nav>
 
     <!-- Hero Section -->
-    <div class="relative overflow-hidden">
+    <section class="pt-16 pb-20 px-4 sm:px-6 lg:px-8">
       <div class="max-w-7xl mx-auto">
-        <div class="relative z-10 pb-8 sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
-          <main class="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
-            <div class="sm:text-center lg:text-left">
-              <h1 class="text-4xl tracking-tight font-extrabold text-white sm:text-5xl md:text-6xl">
-                <span class="block">Win a</span>
-                <span class="block text-yellow-300">Brand New Car!</span>
-              </h1>
-              <p class="mt-3 text-base text-gray-200 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                Join our exciting car raffle! For just ₦10,000 per ticket, you could drive away with a brand new car. 
-                Every ticket has an equal chance to win!
-              </p>
-              <div class="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
-                <div class="rounded-md shadow">
-                  <NuxtLink to="/register" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-purple-600 bg-white hover:bg-gray-50 md:py-4 md:text-lg md:px-10 transition-colors">
-                    Get Your Ticket Now
-                  </NuxtLink>
-                </div>
-                <div class="mt-3 sm:mt-0 sm:ml-3">
-                  <button @click="scrollToDetails" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-purple-600/50 hover:bg-purple-600/70 md:py-4 md:text-lg md:px-10 transition-colors">
-                    Learn More
-                  </button>
-                </div>
-              </div>
+        <div class="text-center">
+          <!-- Trust Badge -->
+          <div class="inline-flex items-center px-4 py-2 rounded-full bg-green-100 text-green-800 text-sm font-medium mb-6">
+            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            100% Fair & Transparent Draws
+          </div>
+          
+          <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold text-neutral-900 mb-6 leading-tight">
+            Win Your 
+            <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">Dream Car</span>
+          </h1>
+          <p class="text-xl text-neutral-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+            Join thousands in Nigeria's most trusted car raffle. For just <span class="font-bold text-neutral-900">₦10,000</span> per ticket, 
+            you could drive away with a brand new car worth millions.
+          </p>
+          
+          <div class="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+            <NuxtLink to="/register" class="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-2xl font-semibold text-lg transition-all hover:shadow-xl hover:-translate-y-1">
+              Buy Ticket Now - ₦10,000
+            </NuxtLink>
+            <button @click="scrollToDetails" class="border-2 border-neutral-300 hover:border-neutral-400 text-neutral-700 px-8 py-4 rounded-2xl font-semibold text-lg transition-all hover:shadow-lg">
+              How It Works
+            </button>
+          </div>
+          
+          <!-- Hero Visual -->
+          <div class="relative">
+            <div class="bg-gradient-to-br from-green-100 to-emerald-50 rounded-3xl p-12 sm:p-16 shadow-2xl">
+              <div class="text-8xl mb-6">🏆</div>
+              <p class="text-2xl font-bold text-neutral-800">Next Draw: Coming Soon</p>
+              <p class="text-neutral-600 mt-2">Join now for your chance to win!</p>
             </div>
-          </main>
-        </div>
-      </div>
-      <div class="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
-        <div class="h-56 w-full sm:h-72 md:h-96 lg:w-full lg:h-full bg-gradient-to-r from-purple-400 to-pink-400 flex items-center justify-center">
-          <div class="text-white text-center">
-            <div class="text-8xl mb-4">🚗</div>
-            <p class="text-xl font-semibold">Your Dream Car Awaits!</p>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Features Section -->
-    <div ref="detailsSection" class="py-12 bg-white/10 backdrop-blur-md">
+    <!-- Trust Signals & Stats -->
+    <section class="py-20 bg-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="lg:text-center">
-          <h2 class="text-base text-yellow-300 font-semibold tracking-wide uppercase">How It Works</h2>
-          <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-white sm:text-4xl">
-            Simple. Fair. Transparent.
+        <div class="text-center mb-16">
+          <h2 class="text-3xl sm:text-4xl font-bold text-neutral-900 mb-4">Trusted by Thousands</h2>
+          <p class="text-xl text-neutral-600">Join Nigeria's most transparent car raffle</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div class="text-center">
+            <div class="bg-green-100 rounded-2xl p-6 mb-4">
+              <div class="text-4xl font-bold text-green-600">₦10K</div>
+            </div>
+            <h3 class="font-semibold text-neutral-900">Ticket Price</h3>
+            <p class="text-neutral-600">Affordable for everyone</p>
+          </div>
+          <div class="text-center">
+            <div class="bg-blue-100 rounded-2xl p-6 mb-4">
+              <div class="text-4xl font-bold text-blue-600">100%</div>
+            </div>
+            <h3 class="font-semibold text-neutral-900">Fair Draw</h3>
+            <p class="text-neutral-600">Transparent & secure</p>
+          </div>
+          <div class="text-center">
+            <div class="bg-purple-100 rounded-2xl p-6 mb-4">
+              <div class="text-4xl font-bold text-purple-600">24/7</div>
+            </div>
+            <h3 class="font-semibold text-neutral-900">Support</h3>
+            <p class="text-neutral-600">Always here to help</p>
+          </div>
+          <div class="text-center">
+            <div class="bg-orange-100 rounded-2xl p-6 mb-4">
+              <div class="text-4xl font-bold text-orange-600">New</div>
+            </div>
+            <h3 class="font-semibold text-neutral-900">Brand New Car</h3>
+            <p class="text-neutral-600">Latest models only</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section ref="detailsSection" class="py-20 bg-neutral-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <span class="inline-block px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-medium mb-4">
+            Simple Process
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-bold text-neutral-900 mb-4">How It Works</h2>
+          <p class="text-xl text-neutral-600 max-w-3xl mx-auto">
+            Get your ticket in three simple steps and join the excitement
           </p>
         </div>
 
-        <div class="mt-10">
-          <div class="space-y-10 md:space-y-0 md:grid md:grid-cols-3 md:gap-x-8 md:gap-y-10">
-            <div class="relative text-center">
-              <div class="flex items-center justify-center h-12 w-12 rounded-md bg-yellow-300 text-purple-600 mx-auto text-xl font-bold">
-                1
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+          <div class="text-center">
+            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-xl transition-shadow">
+              <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <span class="text-2xl font-bold text-green-600">1</span>
               </div>
-              <h3 class="mt-5 text-lg leading-6 font-medium text-white">Register & Login</h3>
-              <p class="mt-2 text-base text-gray-200">
-                Create your account with your basic information. It's quick and secure.
+              <h3 class="text-xl font-bold text-neutral-900 mb-4">Register Account</h3>
+              <p class="text-neutral-600 leading-relaxed">
+                Create your secure account with basic information. Quick, easy, and completely free to join.
               </p>
             </div>
+          </div>
 
-            <div class="relative text-center">
-              <div class="flex items-center justify-center h-12 w-12 rounded-md bg-yellow-300 text-purple-600 mx-auto text-xl font-bold">
-                2
+          <div class="text-center">
+            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-xl transition-shadow">
+              <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <span class="text-2xl font-bold text-blue-600">2</span>
               </div>
-              <h3 class="mt-5 text-lg leading-6 font-medium text-white">Buy Your Ticket</h3>
-              <p class="mt-2 text-base text-gray-200">
-                Purchase your raffle ticket for ₦10,000. Pay securely with Paystack.
+              <h3 class="text-xl font-bold text-neutral-900 mb-4">Buy Your Ticket</h3>
+              <p class="text-neutral-600 leading-relaxed">
+                Purchase your raffle ticket for just ₦10,000. Secure payment with Paystack integration.
               </p>
             </div>
+          </div>
 
-            <div class="relative text-center">
-              <div class="flex items-center justify-center h-12 w-12 rounded-md bg-yellow-300 text-purple-600 mx-auto text-xl font-bold">
-                3
+          <div class="text-center">
+            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-xl transition-shadow">
+              <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <span class="text-2xl font-bold text-purple-600">3</span>
               </div>
-              <h3 class="mt-5 text-lg leading-6 font-medium text-white">Win the Car!</h3>
-              <p class="mt-2 text-base text-gray-200">
-                Wait for the draw and you could be our lucky winner!
+              <h3 class="text-xl font-bold text-neutral-900 mb-4">Win the Car!</h3>
+              <p class="text-neutral-600 leading-relaxed">
+                Wait for the fair, transparent draw. Every ticket has an equal chance to win big!
               </p>
             </div>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Stats Section -->
-    <div class="bg-purple-800/30 backdrop-blur-md">
-      <div class="max-w-7xl mx-auto py-12 px-4 sm:py-16 sm:px-6 lg:px-8 lg:py-20">
-        <div class="max-w-4xl mx-auto text-center">
-          <h2 class="text-3xl font-extrabold text-white sm:text-4xl">
-            Trusted by Thousands
-          </h2>
-          <p class="mt-3 text-xl text-gray-200 sm:mt-4">
-            Join the excitement with these amazing statistics
-          </p>
-        </div>
-        <dl class="mt-10 text-center sm:max-w-3xl sm:mx-auto sm:grid sm:grid-cols-3 sm:gap-8">
-          <div class="flex flex-col">
-            <dt class="order-2 mt-2 text-lg leading-6 font-medium text-gray-200">Ticket Price</dt>
-            <dd class="order-1 text-5xl font-extrabold text-yellow-300">₦10,000</dd>
-          </div>
-          <div class="flex flex-col mt-10 sm:mt-0">
-            <dt class="order-2 mt-2 text-lg leading-6 font-medium text-gray-200">Prize Value</dt>
-            <dd class="order-1 text-5xl font-extrabold text-yellow-300">Brand New Car</dd>
-          </div>
-          <div class="flex flex-col mt-10 sm:mt-0">
-            <dt class="order-2 mt-2 text-lg leading-6 font-medium text-gray-200">Draw Method</dt>
-            <dd class="order-1 text-5xl font-extrabold text-yellow-300">100% Fair</dd>
-          </div>
-        </dl>
-      </div>
-    </div>
+    </section>
 
     <!-- CTA Section -->
-    <div class="bg-white/10 backdrop-blur-md">
-      <div class="max-w-2xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
-        <h2 class="text-3xl font-extrabold text-white sm:text-4xl">
-          <span class="block">Ready to win?</span>
-          <span class="block text-yellow-300">Get your ticket today.</span>
+    <section class="py-20 bg-gradient-to-br from-green-600 to-emerald-700">
+      <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
+          Ready to Win Your Dream Car?
         </h2>
-        <p class="mt-4 text-lg leading-6 text-gray-200">
-          Don't miss your chance to win a brand new car. Every ticket has an equal opportunity to win!
+        <p class="text-xl text-green-100 mb-8 leading-relaxed">
+          Don't miss your chance! Join thousands of Nigerians who trust AutoHub for fair, transparent car raffles.
         </p>
-        <NuxtLink to="/register" class="mt-8 w-full inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-purple-600 bg-white hover:bg-gray-50 sm:w-auto transition-colors">
-          Register Now
-        </NuxtLink>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <NuxtLink to="/register" class="bg-white hover:bg-neutral-100 text-green-600 px-8 py-4 rounded-2xl font-bold text-lg transition-all hover:shadow-2xl hover:-translate-y-1">
+            Buy Ticket Now - ₦10,000
+          </NuxtLink>
+          <NuxtLink to="/login" class="border-2 border-white text-white hover:bg-white hover:text-green-600 px-8 py-4 rounded-2xl font-semibold text-lg transition-all">
+            Already a Member?
+          </NuxtLink>
+        </div>
+        
+        <!-- Trust Indicators -->
+        <div class="mt-12 flex flex-wrap justify-center items-center gap-8 opacity-80">
+          <div class="flex items-center space-x-2 text-green-100">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+            </svg>
+            <span class="font-medium">Secure Payments</span>
+          </div>
+          <div class="flex items-center space-x-2 text-green-100">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            <span class="font-medium">Fair Draws</span>
+          </div>
+          <div class="flex items-center space-x-2 text-green-100">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+              <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+            </svg>
+            <span class="font-medium">24/7 Support</span>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
 
     <!-- Footer -->
-    <footer class="bg-black/20">
+    <footer class="bg-neutral-900 text-neutral-300">
       <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div class="text-center">
-          <p class="text-base text-gray-300">
+          <div class="flex items-center justify-center space-x-2 mb-4">
+            <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+              <span class="text-white font-bold text-sm">🚗</span>
+            </div>
+            <span class="text-2xl font-bold text-white">AutoHub</span>
+          </div>
+          <p class="text-base mb-2">
             &copy; 2025 AutoHub Raffle. All rights reserved.
           </p>
-          <p class="text-sm text-gray-400 mt-2">
-            Raffle conducted fairly and transparently. Good luck!
+          <p class="text-sm text-neutral-500">
+            Licensed and regulated. Fair draws guaranteed.
           </p>
         </div>
       </div>
