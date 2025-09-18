@@ -82,6 +82,22 @@
           </div>
         </div>
       </div>
+      
+      <!-- Featured Win (if any) -->
+      <div v-if="featuredWin" class="mb-8">
+        <WinningCard :ticket="featuredWin">
+          <template #actions>
+            <div class="mt-4">
+              <button 
+                class="w-full bg-gradient-to-r from-yellow-500 to-amber-500 text-white font-bold py-3 rounded-xl transition-all hover:shadow-lg"
+                @click="buyTicket"
+              >
+                Try for Another Win!
+              </button>
+            </div>
+          </template>
+        </WinningCard>
+      </div>
 
       <!-- Quick Stats -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -129,14 +145,14 @@
 
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-neutral-200">
           <div class="flex items-center">
-            <div class="p-3 bg-orange-100 rounded-2xl">
-              <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            <div class="p-3 bg-yellow-100 rounded-2xl">
+              <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 5z"></path>
               </svg>
             </div>
             <div class="ml-4">
-              <p class="text-sm font-medium text-neutral-600">Next Draw</p>
-              <p class="text-lg font-bold text-neutral-900">Coming Soon</p>
+              <p class="text-sm font-medium text-neutral-600">Your Wins</p>
+              <p class="text-lg font-bold text-neutral-900">{{ totalWins }}</p>
             </div>
           </div>
         </div>
@@ -164,6 +180,48 @@
               <div>
                 <p class="text-sm font-medium text-neutral-600">Member Since</p>
                 <p class="text-base text-neutral-900">{{ formatDate(user?.created_at) }}</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Winning Tickets Section -->
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-neutral-200 mt-6">
+            <h3 class="text-lg font-bold text-neutral-900 mb-4">
+              Your Wins
+              <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-1 rounded-full ml-2">
+                {{ totalWins }}
+              </span>
+            </h3>
+            
+            <div v-if="wins.length === 0" class="text-center py-6">
+              <div class="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg class="w-8 h-8 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <h4 class="text-base font-semibold text-neutral-900 mb-1">No wins yet</h4>
+              <p class="text-sm text-neutral-600">Keep buying tickets to increase your chances!</p>
+            </div>
+            
+            <div v-else class="space-y-4">
+              <div 
+                v-for="win in wins" 
+                :key="win.win_id" 
+                class="border-2 border-yellow-300 rounded-xl p-4 bg-gradient-to-br from-yellow-50 to-amber-50"
+              >
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-amber-700 font-bold">{{ win.ticket_number }}</span>
+                  <div class="flex items-center">
+                    <svg class="w-5 h-5 text-yellow-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.18 4.455a1 1 0 01-1.933 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.18-4.455A1 1 0 0112 2z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="text-sm font-semibold text-amber-700">Winner!</span>
+                  </div>
+                </div>
+                <div class="text-xs text-neutral-600">
+                  <p>Won on: {{ formatDate(win.draw_date) }}</p>
+                  <p>Ticket purchased: {{ formatDate(win.ticket_purchase_date) }}</p>
+                </div>
               </div>
             </div>
           </div>
@@ -202,10 +260,33 @@
               <div
                 v-for="ticket in tickets"
                 :key="ticket.id"
-                class="border-2 border-neutral-200 hover:border-green-300 rounded-2xl p-5 bg-gradient-to-br from-green-50 to-emerald-50 transition-all hover:shadow-md"
+                :class="[
+                  'border-2 rounded-2xl p-5 transition-all hover:shadow-md',
+                  ticket.is_winner 
+                    ? 'border-yellow-300 bg-gradient-to-br from-yellow-50 to-amber-50 hover:border-yellow-400' 
+                    : 'border-neutral-200 bg-gradient-to-br from-green-50 to-emerald-50 hover:border-green-300'
+                ]"
               >
+                <!-- Winner badge -->
+                <div v-if="ticket.is_winner" class="flex items-center justify-between mb-2">
+                  <span class="inline-flex items-center bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-1 rounded-full">
+                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.18 4.455a1 1 0 01-1.933 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.18-4.455A1 1 0 0112 2z" clip-rule="evenodd"></path>
+                    </svg>
+                    WINNER!
+                  </span>
+                  <span class="text-xs text-amber-700">
+                    {{ ticket.win_date ? formatDate(ticket.win_date) : 'Draw date not recorded' }}
+                  </span>
+                </div>
+                
                 <div class="flex items-center justify-between mb-3">
-                  <h4 class="font-bold text-green-700 text-lg">{{ ticket.ticket_number }}</h4>
+                  <h4 
+                    :class="[
+                      'font-bold text-lg', 
+                      ticket.is_winner ? 'text-amber-700' : 'text-green-700'
+                    ]"
+                  >{{ ticket.ticket_number }}</h4>
                   <span class="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full">₦10,000</span>
                 </div>
                 <p class="text-sm text-neutral-600 mb-3">
@@ -232,6 +313,7 @@
 <script setup>
 // Import components
 import AlertMessage from '~/components/AlertMessage.vue'
+import WinningCard from '~/components/WinningCard.vue'
 
 // Middleware to protect this route
 definePageMeta({
@@ -243,6 +325,8 @@ const runtimeConfig = useRuntimeConfig()
 
 const user = ref(null)
 const tickets = ref([])
+const wins = ref([])
+const totalWins = ref(0)
 const loading = ref(false)
 const error = ref('')
 const successMessage = ref('')
@@ -256,13 +340,29 @@ if (!paystackPublicKey.value && process.dev) {
   paystackPublicKey.value = 'pk_test_1234567890abcdef' // Development test key
 }
 
+// Computed properties
+const featuredWin = computed(() => {
+  if (wins.value && wins.value.length > 0) {
+    // Map to the format expected by WinningCard
+    return {
+      ticket_number: wins.value[0].ticket_number,
+      draw_date: wins.value[0].draw_date,
+      purchase_date: wins.value[0].ticket_purchase_date
+    }
+  }
+  return null
+})
+
 // Load user data on mount
 onMounted(async () => {
   if (process.client) {
     const userData = localStorage.getItem('user')
     if (userData) {
       user.value = JSON.parse(userData)
-      await loadTickets()
+      await Promise.all([
+        loadTickets(),
+        loadWins()
+      ])
     }
   }
 })
@@ -281,6 +381,28 @@ const loadTickets = async () => {
     }
   } catch (err) {
     console.error('Failed to load tickets:', err)
+  }
+}
+
+const loadWins = async () => {
+  try {
+    const token = localStorage.getItem('authToken')
+    const response = await $fetch(`/api/wins/${user.value.id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    
+    if (response.success) {
+      wins.value = response.wins
+      totalWins.value = response.totalWins
+    }
+  } catch (err) {
+    console.error('Failed to load wins:', err)
+    // We don't want to show an error if wins API fails
+    // This could be a new feature being rolled out
+    wins.value = []
+    totalWins.value = 0
   }
 }
 

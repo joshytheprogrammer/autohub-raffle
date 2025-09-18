@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key')
     const authenticatedUserId = decoded.userId
 
-    // Users can only access their own tickets
+    // Users can only access their own wins
     if (parseInt(userId) !== authenticatedUserId) {
       throw createError({
         statusCode: 403,
@@ -31,21 +31,36 @@ export default defineEventHandler(async (event) => {
 
     const db = getDatabase()
     
-    // Get user's tickets with win information
-    const ticketsResult = await db.execute({
-      sql: `SELECT t.id, t.ticket_number, t.payment_ref, t.created_at,
-              CASE WHEN w.id IS NOT NULL THEN 1 ELSE 0 END as is_winner,
-              w.draw_date as win_date
-            FROM tickets t
-            LEFT JOIN winners w ON t.id = w.ticket_id
-            WHERE t.user_id = ?
-            ORDER BY t.created_at DESC`,
+    // Get user's winning tickets with all relevant information
+    const winsResult = await db.execute({
+      sql: `SELECT 
+              w.id as win_id,
+              w.draw_date,
+              t.id as ticket_id,
+              t.ticket_number,
+              t.created_at as ticket_purchase_date
+            FROM winners w
+            JOIN tickets t ON w.ticket_id = t.id
+            WHERE w.user_id = ?
+            ORDER BY w.draw_date DESC`,
       args: [userId]
     })
 
+    // Get total wins count
+    const winsCountResult = await db.execute({
+      sql: `SELECT COUNT(*) as total_wins
+            FROM winners
+            WHERE user_id = ?`,
+      args: [userId]
+    })
+
+    // Format the response
+    const totalWins = winsCountResult.rows[0]?.total_wins || 0
+
     return {
       success: true,
-      tickets: ticketsResult.rows
+      wins: winsResult.rows || [],
+      totalWins: totalWins
     }
 
   } catch (error) {
@@ -53,10 +68,10 @@ export default defineEventHandler(async (event) => {
       throw error
     }
     
-    console.error('Get tickets error:', error)
+    console.error('Get wins error:', error)
     throw createError({
       statusCode: 500,
-      statusMessage: 'Failed to get tickets'
+      statusMessage: 'Failed to get winning information'
     })
   }
 })
