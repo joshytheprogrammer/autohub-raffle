@@ -147,6 +147,16 @@
 </template>
 
 <script setup>
+// Use centralized auth state
+import { useAuth } from '~/utils/authState'
+
+// Define page metadata with guest middleware
+definePageMeta({
+  middleware: 'guest'
+})
+
+const { setAuth } = useAuth()
+
 const form = reactive({
   name: '',
   email: '',
@@ -186,11 +196,8 @@ const handleSubmit = async () => {
     })
 
     if (response.success) {
-      // Store the JWT token
-      if (process.client) {
-        localStorage.setItem('authToken', response.token)
-        localStorage.setItem('user', JSON.stringify(response.user))
-      }
+      // Use centralized auth state management
+      setAuth(response.token, response.user)
       
       // Redirect to dashboard
       await navigateTo('/dashboard')

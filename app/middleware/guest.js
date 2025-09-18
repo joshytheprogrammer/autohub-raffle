@@ -1,0 +1,23 @@
+import { useAuth } from '~/utils/authState'
+
+/**
+ * Guest middleware to protect routes that should only be accessible to non-authenticated users
+ * For example: login and register pages
+ * 
+ * Usage: 
+ * definePageMeta({
+ *   middleware: 'guest'
+ * })
+ */
+export default defineNuxtRouteMiddleware((to, from) => {
+  // Access auth state
+  const { isAuthenticated } = useAuth()
+  
+  // Check if user is authenticated
+  if (process.client) {
+    if (isAuthenticated()) {
+      // Already authenticated, redirect to dashboard
+      return navigateTo('/dashboard')
+    }
+  }
+})

@@ -1,32 +1,7 @@
 <template>
   <div class="min-h-screen bg-neutral-50">
     <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b border-neutral-200 sticky top-0 z-50">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-          <div class="flex items-center space-x-3">
-            <NuxtLink to="/" class="flex items-center space-x-2">
-              <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
-                <span class="text-white font-bold text-sm">🚗</span>
-              </div>
-              <span class="text-2xl font-bold text-neutral-900">AutoHub</span>
-            </NuxtLink>
-            <span class="hidden sm:block text-neutral-500">Dashboard</span>
-          </div>
-          <div class="flex items-center space-x-4">
-            <div class="flex items-center space-x-2">
-              <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                <span class="text-green-600 font-medium text-sm">{{ user?.name?.charAt(0)?.toUpperCase() }}</span>
-              </div>
-              <span class="hidden sm:block text-neutral-700 font-medium">{{ user?.name }}</span>
-            </div>
-            <button @click="logout" class="text-neutral-500 hover:text-red-600 font-medium transition-colors">
-              Logout
-            </button>
-          </div>
-        </div>
-      </div>
-    </nav>
+    <MainNavigation />
 
     <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
       <!-- Alerts -->
@@ -314,6 +289,8 @@
 // Import components
 import AlertMessage from '~/components/AlertMessage.vue'
 import WinningCard from '~/components/WinningCard.vue'
+import MainNavigation from '~/components/MainNavigation.vue'
+import { useAuth } from '~/utils/authState'
 
 // Middleware to protect this route
 definePageMeta({
@@ -323,7 +300,9 @@ definePageMeta({
 // Get runtime config for environment variables
 const runtimeConfig = useRuntimeConfig()
 
-const user = ref(null)
+// Use centralized auth state
+const { auth, clearAuth } = useAuth()
+
 const tickets = ref([])
 const wins = ref([])
 const totalWins = ref(0)
@@ -333,6 +312,9 @@ const successMessage = ref('')
 const showPaystack = ref(false)
 // Make public key available for debugging
 const paystackPublicKey = ref(runtimeConfig.public.paystackPublicKey)
+
+// Get user from auth state
+const user = computed(() => auth.value.user)
 
 // Fallback to test key if not available in environment and in development mode
 if (!paystackPublicKey.value && process.dev) {
@@ -355,21 +337,17 @@ const featuredWin = computed(() => {
 
 // Load user data on mount
 onMounted(async () => {
-  if (process.client) {
-    const userData = localStorage.getItem('user')
-    if (userData) {
-      user.value = JSON.parse(userData)
-      await Promise.all([
-        loadTickets(),
-        loadWins()
-      ])
-    }
+  if (user.value) {
+    await Promise.all([
+      loadTickets(),
+      loadWins()
+    ])
   }
 })
 
 const loadTickets = async () => {
   try {
-    const token = localStorage.getItem('authToken')
+    const token = auth.value.token
     const response = await $fetch(`/api/tickets/${user.value.id}`, {
       headers: {
         Authorization: `Bearer ${token}`
@@ -386,7 +364,7 @@ const loadTickets = async () => {
 
 const loadWins = async () => {
   try {
-    const token = localStorage.getItem('authToken')
+    const token = auth.value.token
     const response = await $fetch(`/api/wins/${user.value.id}`, {
       headers: {
         Authorization: `Bearer ${token}`
@@ -464,7 +442,7 @@ const handlePaymentSuccess = async (response) => {
       throw new Error('Invalid payment response')
     }
     
-    const token = localStorage.getItem('authToken')
+    const token = auth.value.token
     if (!token) {
       throw new Error('Authentication token not found')
     }
@@ -499,11 +477,8 @@ const handlePaymentSuccess = async (response) => {
 // Paystack script loading is now handled in the utils/paystack.js file
 
 const logout = () => {
-  if (process.client) {
-    localStorage.removeItem('authToken')
-    localStorage.removeItem('user')
-    navigateTo('/login')
-  }
+  clearAuth()
+  navigateTo('/login')
 }
 
 const formatDate = (dateString) => {

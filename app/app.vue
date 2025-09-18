@@ -15,21 +15,16 @@ useHead({
   ]
 })
 
-// Handle client-side navigation
+// Import auth state utility
+import { useAuth } from '~/utils/authState'
+
+// Initialize auth state
+const { initAuth } = useAuth()
+
+// Handle client-side authentication
 if (process.client) {
-  // Initialize auth state on app load
-  const checkAuth = () => {
-    const token = localStorage.getItem('authToken')
-    const user = localStorage.getItem('user')
-    
-    if (token && user) {
-      // Optional: Validate token with server
-      console.log('User authenticated:', JSON.parse(user).name)
-    }
-  }
-  
   onMounted(() => {
-    checkAuth()
+    initAuth()
   })
 }
 </script>
