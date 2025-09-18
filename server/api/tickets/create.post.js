@@ -107,15 +107,15 @@ export default defineEventHandler(async (event) => {
       sql: `INSERT INTO tickets (
               user_id, 
               ticket_number, 
-              payment_ref, 
-              payment_amount, 
+              payment_ref,
+              payment_amount,
               created_at
             )
             VALUES (?, ?, ?, ?, datetime('now'))`,
       args: [
         userId, 
         '', // Empty ticket_number initially
-        paymentRef, 
+        paymentRef,
         TICKET_PRICE_NGN
       ]
     });

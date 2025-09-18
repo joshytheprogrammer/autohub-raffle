@@ -15,6 +15,11 @@ export function getDatabase() {
     
     // Initialize tables
     initializeTables()
+    
+    // Run migrations asynchronously
+    runMigrations().catch(error => {
+      console.error('Error running migrations:', error)
+    })
   }
   
   return db
@@ -96,3 +101,22 @@ process.on('SIGTERM', () => {
   }
   process.exit(0)
 })
+
+/**
+ * Run database migrations
+ * This will apply all necessary schema changes to the database
+ */
+async function runMigrations() {
+  try {
+    console.log('Running database migrations...')
+    
+    // Import and run migration to add payment_amount column
+    const { default: addPaymentAmountColumn } = await import('../database/migrations/add-payment-amount.js')
+    await addPaymentAmountColumn()
+    
+    console.log('Database migrations completed successfully')
+  } catch (error) {
+    console.error('Failed to run migrations:', error)
+    throw error
+  }
+}

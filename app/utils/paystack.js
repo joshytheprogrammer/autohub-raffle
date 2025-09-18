@@ -2,9 +2,34 @@
  * Paystack payment utilities for AutoHub Raffle
  */
 
+import { useRuntimeConfig } from 'nuxt/app';
+
 // Constants
 export const TICKET_PRICE_NGN = 10000; // ₦10,000
 export const TICKET_PRICE_KOBO = TICKET_PRICE_NGN * 100; // In kobo (1 NGN = 100 kobo)
+
+/**
+ * Debug function to check if the Paystack public key is available
+ * @returns {boolean} True if the key is available
+ */
+export function checkPaystackPublicKey() {
+  try {
+    // First try to get from runtime config
+    const runtimeConfig = useRuntimeConfig();
+    const publicKey = runtimeConfig?.public?.paystackPublicKey;
+    
+    if (publicKey) {
+      console.log('Paystack public key is available in runtime config');
+      return true;
+    } else {
+      console.warn('Paystack public key is NOT available in runtime config');
+      return false;
+    }
+  } catch (e) {
+    console.error('Error checking Paystack public key:', e);
+    return false;
+  }
+}
 
 /**
  * Load the Paystack script dynamically
@@ -37,6 +62,7 @@ export function loadPaystackScript() {
  * @param {Object} config - Payment configuration
  * @param {string} config.email - Customer email
  * @param {number} config.userId - User ID
+ * @param {string} config.publicKey - Optional Paystack public key (overrides runtime config)
  * @param {Function} config.onSuccess - Success callback function
  * @param {Function} config.onError - Error callback function
  * @param {Function} config.onClose - Close callback function
@@ -45,6 +71,7 @@ export function loadPaystackScript() {
 export async function initializePaystackPayment({
   email, 
   userId,
+  publicKey: customPublicKey,
   onSuccess,
   onError,
   onClose
@@ -53,14 +80,23 @@ export async function initializePaystackPayment({
     // Ensure the Paystack script is loaded
     await loadPaystackScript();
     
-    // Get public key from environment variable (injected via nuxt.config.js)
-    const publicKey = process.env.PAYSTACK_PUBLIC_KEY;
+    // Get public key - first try the custom provided key, then fall back to runtime config
+    let publicKey = customPublicKey;
+    
+    // If no custom key provided, try to get from runtime config
+    if (!publicKey) {
+      try {
+        const runtimeConfig = useRuntimeConfig();
+        publicKey = runtimeConfig.public.paystackPublicKey;
+      } catch (e) {
+        console.warn('Could not access runtime config:', e);
+      }
+    }
     
     if (!publicKey) {
+      console.error('Missing Paystack public key');
       throw new Error('Paystack public key not configured');
-    }
-
-    // Generate a unique reference
+    }    // Generate a unique reference
     const reference = `AUTOHUB_${Date.now()}_${Math.floor(Math.random() * 1000000)}`;
 
     // Initialize Paystack popup

@@ -47,6 +47,15 @@
         @dismiss="error = ''"
         class="mb-6"
       />
+      
+      <!-- Debug info - only shown when no public key is found -->
+      <AlertMessage
+        v-if="!paystackPublicKey && process.dev"
+        type="error"
+        title="Configuration Error"
+        message="Paystack public key is not set in environment variables. Please check your .env file."
+        class="mb-6"
+      />
 
       <!-- Welcome Section -->
       <div class="mb-8">
@@ -229,12 +238,23 @@ definePageMeta({
   middleware: 'auth'
 })
 
+// Get runtime config for environment variables
+const runtimeConfig = useRuntimeConfig()
+
 const user = ref(null)
 const tickets = ref([])
 const loading = ref(false)
 const error = ref('')
 const successMessage = ref('')
 const showPaystack = ref(false)
+// Make public key available for debugging
+const paystackPublicKey = ref(runtimeConfig.public.paystackPublicKey)
+
+// Fallback to test key if not available in environment and in development mode
+if (!paystackPublicKey.value && process.dev) {
+  console.warn('No Paystack public key found in environment, using test key for development')
+  paystackPublicKey.value = 'pk_test_1234567890abcdef' // Development test key
+}
 
 // Load user data on mount
 onMounted(async () => {
@@ -271,11 +291,20 @@ const buyTicket = async () => {
 
   try {
     // Import utilities only when needed (client-side)
-    const { initializePaystackPayment } = await import('~/utils/paystack')
+    const { initializePaystackPayment, checkPaystackPublicKey } = await import('~/utils/paystack')
+    
+    // Make sure we have the Paystack public key before proceeding
+    if (!paystackPublicKey.value) {
+      const keyAvailable = checkPaystackPublicKey();
+      if (!keyAvailable) {
+        throw new Error('Paystack is not properly configured. Missing public key.');
+      }
+    }
     
     await initializePaystackPayment({
       email: user.value.email,
       userId: user.value.id,
+      publicKey: paystackPublicKey.value, // Pass the public key explicitly
       onSuccess: async (response) => {
         await handlePaymentSuccess(response)
       },
@@ -294,7 +323,15 @@ const buyTicket = async () => {
     })
   } catch (err) {
     console.error('Payment initialization error:', err)
-    error.value = 'Failed to initialize payment. Please try again later.'
+    
+    // More descriptive error message
+    if (err.message && err.message.includes('not properly configured')) {
+      error.value = 'Payment system not properly configured. Please contact support.'
+      console.error('Missing Paystack public key. Check your .env file and make sure PAYSTACK_PUBLIC_KEY is set correctly.')
+    } else {
+      error.value = 'Failed to initialize payment. Please try again later.'
+    }
+    
     loading.value = false
   }
 }
