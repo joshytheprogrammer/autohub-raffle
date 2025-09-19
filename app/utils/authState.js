@@ -95,6 +95,7 @@ export const useAuth = () => {
     if (!auth.value.initialized) {
       initAuth();
     }
+    
     return auth.value.isLoggedIn;
   };
 

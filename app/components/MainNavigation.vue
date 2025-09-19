@@ -11,7 +11,7 @@
           </NuxtLink>
         </div>
         <div class="flex items-center space-x-4">
-          <template v-if="isAuthenticated">
+          <template v-if="isLoggedIn">
             <div class="flex items-center space-x-3">
               <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
                 <span class="text-green-600 font-medium text-sm">{{ user?.name?.charAt(0)?.toUpperCase() }}</span>
@@ -51,8 +51,16 @@
 <script setup>
 import { useAuth } from '~/utils/authState'
 
-const { auth, isAuthenticated, clearAuth } = useAuth()
+const { auth, clearAuth } = useAuth()
 const user = computed(() => auth.value.user)
+const isLoggedIn = computed(() => auth.value.isLoggedIn)
+
+// Initialize auth on component mount
+onMounted(() => {
+  if (!auth.value.initialized) {
+    auth.value.initialized = true
+  }
+})
 
 const handleLogout = () => {
   clearAuth()

@@ -11,11 +11,16 @@ import { useAuth } from '~/utils/authState'
  */
 export default defineNuxtRouteMiddleware((to, from) => {
   // Access auth state
-  const { isAuthenticated } = useAuth()
+  const { auth, initAuth } = useAuth()
+  
+  // Initialize auth if not already initialized
+  if (!auth.value.initialized) {
+    initAuth()
+  }
   
   // Check if user is authenticated
   if (process.client) {
-    if (isAuthenticated()) {
+    if (auth.value.isLoggedIn) {
       // Already authenticated, redirect to dashboard
       return navigateTo('/dashboard')
     }
