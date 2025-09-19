@@ -24,7 +24,7 @@
             you could drive away with a brand new car worth millions.
           </p>
           
-          <div class="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+          <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
             <NuxtLink to="/register" class="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-2xl font-semibold text-lg transition-all hover:shadow-xl hover:-translate-y-1">
               Buy Ticket Now - ₦10,000
             </NuxtLink>
@@ -33,12 +33,20 @@
             </button>
           </div>
           
-          <!-- Hero Visual -->
-          <div class="relative">
-            <div class="bg-gradient-to-br from-green-100 to-emerald-50 rounded-3xl p-12 sm:p-16 shadow-2xl">
-              <div class="text-8xl mb-6">🏆</div>
-              <p class="text-2xl font-bold text-neutral-800">Next Draw: Coming Soon</p>
-              <p class="text-neutral-600 mt-2">Join now for your chance to win!</p>
+          <!-- Car Slider -->
+          <div class="max-w-6xl mx-auto mb-16">
+            <CarSlider :cars="featuredCars" />
+            
+            <div class="mt-6 bg-gradient-to-r from-yellow-50 to-amber-50 border border-yellow-200 rounded-xl p-4 text-center">
+              <div class="inline-block bg-yellow-100 text-yellow-800 text-sm font-semibold px-3 py-1 rounded-full mb-2">
+                <span class="flex items-center">
+                  <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.18 4.455a1 1 0 01-1.933 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.18-4.455A1 1 0 0112 2z" clip-rule="evenodd"></path>
+                  </svg>
+                  Limited Time Opportunity
+                </span>
+              </div>
+              <p class="text-amber-800 font-medium">Don't miss your chance to win one of these luxury vehicles for just ₦10,000 per ticket!</p>
             </div>
           </div>
         </div>
@@ -206,8 +214,37 @@
 
 <script setup>
 import MainNavigation from '~/components/MainNavigation.vue'
+import CarSlider from '~/components/CarSlider.vue'
 
 const detailsSection = ref(null)
+
+// Featured cars data
+const featuredCars = [
+  {
+    name: "2025 Toyota Camry SE",
+    image: "/images/cars/toyota-camry.png", 
+    price: 18500000,
+    description: "Experience luxury and performance with the all-new Toyota Camry SE. This sleek sedan offers outstanding fuel economy and cutting-edge technology.",
+    features: ["Leather Interior", "Touch Screen", "Backup Camera", "Automatic", "Bluetooth", "Climate Control"],
+    drawDate: "October 15, 2025"
+  },
+  {
+    name: "2025 Honda Accord Sport",
+    image: "/images/cars/honda-accord.png", 
+    price: 19800000,
+    description: "The Honda Accord Sport combines elegance with power. Its sporty design and responsive handling make every drive an exciting experience.",
+    features: ["Sport Mode", "Sunroof", "Heated Seats", "Apple CarPlay", "Lane Assist", "Turbo Engine"],
+    drawDate: "November 20, 2025"
+  },
+  {
+    name: "2025 Lexus ES 350",
+    image: "/images/cars/lexus-es.png", 
+    price: 36500000,
+    description: "Luxury redefined. The Lexus ES 350 delivers premium comfort with state-of-the-art technology and sophisticated styling.",
+    features: ["Premium Sound", "Leather Package", "Navigation", "Adaptive Cruise", "Wireless Charging", "Safety System+"],
+    drawDate: "December 10, 2025"
+  }
+]
 
 const scrollToDetails = () => {
   if (detailsSection.value) {

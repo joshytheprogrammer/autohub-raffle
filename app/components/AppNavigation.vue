@@ -5,9 +5,9 @@
         <div class="flex items-center">
           <NuxtLink to="/" class="flex items-center space-x-2">
             <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
-              <span class="text-white font-bold text-sm">🚗</span>
+              <img src="https://autohub.africa/logo.png" alt="logo.png">
             </div>
-            <span class="text-2xl font-bold text-neutral-900">AutoHub</span>
+            <!-- <span class="text-2xl font-bold text-neutral-900">AutoHub</span> -->
           </NuxtLink>
         </div>
         <div class="flex items-center space-x-4">
