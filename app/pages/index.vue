@@ -194,12 +194,12 @@
     <footer class="bg-neutral-900 text-neutral-300">
       <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div class="text-center">
-          <div class="flex items-center justify-center space-x-2 mb-4">
+          <NuxtLink to="/" class="flex items-center space-x-2">
             <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
-              <span class="text-white font-bold text-sm">🚗</span>
+              <img src="https://autohub.africa/logo.png" alt="logo.png">
             </div>
-            <span class="text-2xl font-bold text-white">AutoHub</span>
-          </div>
+            <!-- <span class="text-2xl font-bold text-neutral-900">AutoHub</span> -->
+          </NuxtLink>
           <p class="text-base mb-2">
             &copy; 2025 AutoHub Raffle. All rights reserved.
           </p>
