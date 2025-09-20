@@ -12,7 +12,7 @@
             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
             </svg>
-            100% Fair & Transparent Draws
+            100% Fair & Transparent Grand Giveaway
           </div>
           
           <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold text-neutral-900 mb-6 leading-tight">
@@ -20,7 +20,7 @@
             <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">Dream Car</span>
           </h1>
           <p class="text-xl text-neutral-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Join thousands in Nigeria's most trusted car raffle. For just <span class="font-bold text-neutral-900">₦10,000</span> per ticket, 
+            Join thousands in Nigeria's most trusted AutoHub Grand Giveaway. For just <span class="font-bold text-neutral-900">₦10,000</span> per ticket, 
             you could drive away with a brand new car worth millions.
           </p>
           
@@ -34,20 +34,13 @@
           </div>
           
           <!-- Car Slider -->
-          <div class="max-w-6xl mx-auto mb-16">
-            <CarSlider :cars="featuredCars" />
-            
-            <div class="mt-6 bg-gradient-to-r from-yellow-50 to-amber-50 border border-yellow-200 rounded-xl p-4 text-center">
-              <div class="inline-block bg-yellow-100 text-yellow-800 text-sm font-semibold px-3 py-1 rounded-full mb-2">
-                <span class="flex items-center">
-                  <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.18 4.455a1 1 0 01-1.933 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.18-4.455A1 1 0 0112 2z" clip-rule="evenodd"></path>
-                  </svg>
-                  Limited Time Opportunity
-                </span>
-              </div>
-              <p class="text-amber-800 font-medium">Don't miss your chance to win one of these luxury vehicles for just ₦10,000 per ticket!</p>
-            </div>
+          <div class="max-w-6xl mx-auto mb-8">
+            <CarSlider :car-info="carInfo" :car-images="carImages" />
+          </div>
+          
+          <!-- Countdown Timer -->
+          <div class="max-w-3xl mx-auto mb-16">
+            <CountdownTimer />
           </div>
         </div>
       </div>
@@ -58,7 +51,7 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
           <h2 class="text-3xl sm:text-4xl font-bold text-neutral-900 mb-4">Trusted by Thousands</h2>
-          <p class="text-xl text-neutral-600">Join Nigeria's most transparent car raffle</p>
+          <p class="text-xl text-neutral-600">Join Nigeria's most transparent car Grand Giveaway</p>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -73,7 +66,7 @@
             <div class="bg-blue-100 rounded-2xl p-6 mb-4">
               <div class="text-4xl font-bold text-blue-600">100%</div>
             </div>
-            <h3 class="font-semibold text-neutral-900">Fair Draw</h3>
+            <h3 class="font-semibold text-neutral-900">Fair Giveaway</h3>
             <p class="text-neutral-600">Transparent & secure</p>
           </div>
           <div class="text-center">
@@ -194,12 +187,6 @@
     <footer class="bg-neutral-900 text-neutral-300">
       <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div class="text-center">
-          <NuxtLink to="/" class="flex items-center space-x-2">
-            <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
-              <img src="https://autohub.africa/logo.png" alt="logo.png">
-            </div>
-            <!-- <span class="text-2xl font-bold text-neutral-900">AutoHub</span> -->
-          </NuxtLink>
           <p class="text-base mb-2">
             &copy; 2025 AutoHub Raffle. All rights reserved.
           </p>
@@ -215,36 +202,36 @@
 <script setup>
 import MainNavigation from '~/components/MainNavigation.vue'
 import CarSlider from '~/components/CarSlider.vue'
+import CountdownTimer from '~/components/CountdownTimer.vue'
 
 const detailsSection = ref(null)
 
-// Featured cars data
-const featuredCars = [
-  {
-    name: "2025 Toyota Camry SE",
-    image: "/images/cars/toyota-camry.png", 
-    price: 18500000,
-    description: "Experience luxury and performance with the all-new Toyota Camry SE. This sleek sedan offers outstanding fuel economy and cutting-edge technology.",
-    features: ["Leather Interior", "Touch Screen", "Backup Camera", "Automatic", "Bluetooth", "Climate Control"],
-    drawDate: "October 15, 2025"
-  },
-  {
-    name: "2025 Honda Accord Sport",
-    image: "/images/cars/honda-accord.png", 
-    price: 19800000,
-    description: "The Honda Accord Sport combines elegance with power. Its sporty design and responsive handling make every drive an exciting experience.",
-    features: ["Sport Mode", "Sunroof", "Heated Seats", "Apple CarPlay", "Lane Assist", "Turbo Engine"],
-    drawDate: "November 20, 2025"
-  },
-  {
-    name: "2025 Lexus ES 350",
-    image: "/images/cars/lexus-es.png", 
-    price: 36500000,
-    description: "Luxury redefined. The Lexus ES 350 delivers premium comfort with state-of-the-art technology and sophisticated styling.",
-    features: ["Premium Sound", "Leather Package", "Navigation", "Adaptive Cruise", "Wireless Charging", "Safety System+"],
-    drawDate: "December 10, 2025"
-  }
-]
+// Car information (static data)
+const carInfo = {
+  name: "2025 Toyota Camry SE",
+  price: 32500000,
+  description: "Experience luxury and performance with the all-new Toyota Camry SE. This sleek sedan offers outstanding fuel economy and cutting-edge technology paired with premium comfort.",
+  features: ["Leather Interior", "Touch Screen", "Backup Camera", "Automatic", "Bluetooth", "Climate Control", "Sunroof", "Alloy Wheels"],
+  drawDate: "December 24, 2025"
+}
+
+// Multiple car images (12 different angles)
+const carImages = [
+      { url: "https://delivery.via.assetscs.toyota.com/adobe/assets/urn:aaid:aem:96f2ef49-9528-4f86-bbaf-95a36881e66a/as/image.png?fmt=png-alpha,rgb,none" },
+      { url: "https://delivery.via.assetscs.toyota.com/adobe/assets/urn:aaid:aem:22be9b54-fbd1-4301-bcfc-627ad89e0179/as/image.png?fmt=png-alpha,rgb,none"},
+      { url: "https://delivery.via.assetscs.toyota.com/adobe/assets/urn:aaid:aem:19e530e3-47cf-41e3-a6f4-a8b5676bb04c/as/image.png?fmt=png-alpha,rgb,none"},
+      { url: "https://delivery.via.assetscs.toyota.com/adobe/assets/urn:aaid:aem:1e63c1e5-dcf4-42b2-8d3b-1dcc91623d8a/as/image.png?fmt=png-alpha,rgb,none"},
+      { url: "https://delivery.via.assetscs.toyota.com/adobe/assets/urn:aaid:aem:db667403-77ac-4a58-ab27-e56a3735de8a/as/image.png?fmt=png-alpha,rgb,none"},
+      { url: "https://delivery.via.assetscs.toyota.com/adobe/assets/urn:aaid:aem:3810df62-34ad-4d15-993e-e6e2fd65746e/as/image.png?fmt=png-alpha,rgb,none"},
+      { url: "https://delivery.via.assetscs.toyota.com/adobe/assets/urn:aaid:aem:4efaa595-5f8c-4d54-8bb4-92e6aa87dd32/as/image.png?fmt=png-alpha,rgb,none"},
+      { url: "https://delivery.via.assetscs.toyota.com/adobe/assets/urn:aaid:aem:47e75272-3059-4116-a71a-15dc1d8edf0c/as/image.png?fmt=png-alpha,rgb,none"},
+      { url: "https://delivery.via.assetscs.toyota.com/adobe/assets/urn:aaid:aem:1b484548-2e57-47ea-ace7-6943ed18046d/as/image.png?fmt=png-alpha,rgb,none"},
+      { url: "https://delivery.via.assetscs.toyota.com/adobe/assets/urn:aaid:aem:31382c9e-101e-4289-bb56-fcbaf4316001/as/image.png?fmt=png-alpha,rgb,none"},
+      { url: "https://delivery.via.assetscs.toyota.com/adobe/assets/urn:aaid:aem:57868d67-4b9d-4bff-bd56-adb7e1f2c559/as/image.png?fmt=png-alpha,rgb,none"},
+      { url: "https://delivery.via.assetscs.toyota.com/adobe/assets/urn:aaid:aem:f23847ce-f837-48d7-9375-637a0ae2b817/as/image.png?fmt=png-alpha,rgb,none"},
+      { url: "https://delivery.via.assetscs.toyota.com/adobe/assets/urn:aaid:aem:d97bc7a9-de00-433d-b266-89f5ff891997/as/image.png?fmt=png-alpha,rgb,none"},
+      { url: "https://delivery.via.assetscs.toyota.com/adobe/assets/urn:aaid:aem:4e7e7969-58ef-4986-ab74-bac501265d11/as/image.png?fmt=png-alpha,rgb,none"}
+    ]
 
 const scrollToDetails = () => {
   if (detailsSection.value) {
@@ -256,7 +243,7 @@ const scrollToDetails = () => {
 useHead({
   title: 'AutoHub - Win a Brand New Car!',
   meta: [
-    { name: 'description', content: 'Join AutoHub car raffle for just ₦10,000 per ticket. Win a brand new car with fair and transparent draws!' }
+    { name: 'description', content: 'Join AutoHub Grand Giveaway for just ₦10,000 per ticket. Win a brand new car with our fair and transparent Grand Giveaway!' }
   ]
 })
 </script>
