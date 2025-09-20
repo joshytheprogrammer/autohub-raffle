@@ -8,7 +8,7 @@
       <div class="flex flex-col items-center">
         <div class="text-center mb-3">
           <p class="text-neutral-700 font-medium">Mark your calendar for the big day!</p>
-          <p class="text-lg font-semibold text-neutral-800">December 24, 2025</p>
+          <p class="text-lg font-semibold text-neutral-800">December 24th, 2025</p>
         </div>
         
         <div class="grid grid-cols-4 gap-3 md:gap-6 w-full max-w-md mx-auto">
